@@ -22,6 +22,8 @@ from matplotlib import pyplot as plt
 from PIL import Image
 from IPython.display import display
 
+import cv2
+
 from object_detection.utils import ops as utils_ops
 from object_detection.utils import label_map_util
 from object_detection.utils import visualization_utils as vis_util
@@ -58,11 +60,11 @@ TEST_IMAGE_PATHS
 model_name = 'ssd_mobilenet_v1_coco_2017_11_17'
 detection_model = load_model(model_name)
 
-print(detection_model.signatures['serving_default'].inputs)
+#print(detection_model.signatures['serving_default'].inputs)
 
-print(detection_model.signatures['serving_default'].output_dtypes)
+#print(detection_model.signatures['serving_default'].output_dtypes)
 
-print(detection_model.signatures['serving_default'].output_shapes)
+#print(detection_model.signatures['serving_default'].output_shapes)
 
 def run_inference_for_single_image(model, image):
   image = np.asarray(image)
@@ -116,17 +118,18 @@ def show_inference(model, image_path):
       use_normalized_coordinates=True,
       line_thickness=8)
 
-  display(Image.fromarray(image_np))
+  #display(Image.fromarray(image_np))
+  img = Image.fromarray(image_np, 'RGB')
+  #img.save('my.png')
+  img.show()
 
 
 for image_path in TEST_IMAGE_PATHS:
   show_inference(detection_model, image_path)
 
 
-import cv2
-cap = cv2.VideoCapture(0) # or cap = cv2.VideoCapture("<video-path>")
-
-def run_inference(model, cap):
+def run_inference(model):
+    cap = cv2.VideoCapture(0) # or cap = cv2.VideoCapture("<video-path>")
     while cap.isOpened():
         ret, image_np = cap.read()
         # Actual detection.
@@ -147,4 +150,4 @@ def run_inference(model, cap):
             cv2.destroyAllWindows()
             break
 
-run_inference(detection_model, cap)
+run_inference(detection_model)
