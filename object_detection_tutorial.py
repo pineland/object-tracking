@@ -147,3 +147,4 @@ def run_inference(model, cap):
             cv2.destroyAllWindows()
             break
 
+run_inference(detection_model, cap)
