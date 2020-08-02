@@ -12,7 +12,10 @@ RUN apt-get update && apt-get install -y \
     python3-pil>=6.2.0 \
     python3-lxml \
     python3-tk \
-    wget
+    libsm6
+    libxext6
+    libxrender-dev
+    wget  
 
 # Install gcloud and gsutil commands
 # https://cloud.google.com/sdk/docs/quickstart-debian-ubuntu
@@ -41,6 +44,7 @@ RUN python -m pip install -U pip
 RUN python -m pip install .
 
 RUN pip install ipython
+RUN pip install opencv-python
 RUN pip install opencv-contrib-python
 
 ENV TF_CPP_MIN_LOG_LEVEL 3
