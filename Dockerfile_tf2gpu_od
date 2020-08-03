@@ -30,8 +30,8 @@ RUN useradd -ms /bin/bash tensorflow
 USER tensorflow
 WORKDIR /home/tensorflow
 
-# Copy this version of of the model garden into the image
-RUN git clone https://github.com/tensorflow/models.git /home/tensorflow/models
+# Copy this version of of the model garden into the image  => Replace as volume connection btw. host and container.
+#RUN git clone https://github.com/tensorflow/models.git /home/tensorflow/models
 
 # Compile protobuf configs
 WORKDIR /home/tensorflow/models/research/
