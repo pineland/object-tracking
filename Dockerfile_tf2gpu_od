@@ -46,6 +46,7 @@ RUN python -m pip install .
 RUN pip install ipython
 RUN pip install opencv-python
 RUN pip install opencv-contrib-python
+RUN pip install imageio
 
 ENV TF_CPP_MIN_LOG_LEVEL 3
 
