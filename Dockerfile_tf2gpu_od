@@ -34,11 +34,11 @@ WORKDIR /home/tensorflow
 #RUN git clone https://github.com/tensorflow/models.git /home/tensorflow/models
 
 # Compile protobuf configs
-WORKDIR /home/tensorflow/models/research/
-RUN protoc object_detection/protos/*.proto --python_out=.
+#WORKDIR /home/tensorflow/models/research/
+#RUN protoc object_detection/protos/*.proto --python_out=.
 
-RUN cp object_detection/packages/tf2/setup.py ./
-ENV PATH="/home/tensorflow/.local/bin:${PATH}"
+#RUN cp object_detection/packages/tf2/setup.py ./
+#ENV PATH="/home/tensorflow/.local/bin:${PATH}"
 
 RUN python -m pip install -U pip
 RUN python -m pip install .
