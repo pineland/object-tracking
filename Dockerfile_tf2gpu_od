@@ -41,7 +41,7 @@ WORKDIR /home/tensorflow
 #ENV PATH="/home/tensorflow/.local/bin:${PATH}"
 
 RUN python -m pip install -U pip
-RUN python -m pip install .
+#RUN python -m pip install .
 
 RUN pip install ipython
 RUN pip install opencv-python
