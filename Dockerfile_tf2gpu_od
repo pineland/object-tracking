@@ -30,6 +30,12 @@ RUN useradd -ms /bin/bash tensorflow
 USER tensorflow
 WORKDIR /home/tensorflow
 
+# ------------------------------------------------------------------------------- #
+# 아래는 이미지 자체에서 models를 다운받았을 때 진행한다.                                   #
+# 호스트에서 models 다운받아 docker volume으로 연결 시에는 Container 생성 후,              #
+# root로 Container에 들어가서(docker exec -it -u 0 이미지명 /bin/bash) 하나하나 실행한다.  #
+# ------------------------------------------------------------------------------- #
+
 # Copy this version of of the model garden into the image  => Replace as volume connection btw. host and container.
 #RUN git clone https://github.com/tensorflow/models.git /home/tensorflow/models
 
@@ -40,13 +46,13 @@ WORKDIR /home/tensorflow
 #RUN cp object_detection/packages/tf2/setup.py ./
 #ENV PATH="/home/tensorflow/.local/bin:${PATH}"
 
-RUN python -m pip install -U pip
+#RUN python -m pip install -U pip
 #RUN python -m pip install .
 
-RUN pip install ipython
-RUN pip install opencv-python
-RUN pip install opencv-contrib-python
-RUN pip install imageio
+#RUN pip install ipython
+#RUN pip install opencv-python
+#RUN pip install opencv-contrib-python
+#RUN pip install imageio
 
 ENV TF_CPP_MIN_LOG_LEVEL 3
 
