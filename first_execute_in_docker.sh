@@ -1,6 +1,7 @@
 !#/bin/bash
 
-echo -ne '이 쉘스크립트는 docker container에 root로 들어가서 환경설정을 위해 실행하는 스크립트이다.'
+echo '이 쉘스크립트는 docker container에 root로 들어가서 환경설정을 위해 실행하는 스크립트이다. Press enter..'
+read text
 
 # Compile protobuf configs
 cd /home/tensorflow/models/research/
