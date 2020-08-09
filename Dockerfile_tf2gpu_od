@@ -54,5 +54,6 @@ WORKDIR /home/tensorflow
 #RUN pip install opencv-contrib-python
 #RUN pip install imageio
 
+# Tensorflow log filtering. default : 0 (show all logs), 1 : filter INFO logs, 2 : filter WARNING logs, 3 : filter ERROR logs.
 ENV TF_CPP_MIN_LOG_LEVEL 3
 
