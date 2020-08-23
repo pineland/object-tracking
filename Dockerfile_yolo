@@ -101,9 +101,9 @@ WORKDIR /darknet
 #XAUTH=/tmp/.docker.xauth
 #xauth nlist $DISPLAY | sed -e 's/^..../ffff/' | xauth -f $XAUTH nmerge - 
 
-# 진입(2) : 현재의 디렉토리를 컨테이너(/darknet/host)에 마운트하여 각종 weights, cfg 파일들을 공유하자.
+# 진입(2) : 호스트의 custom 디렉토리를 컨테이너(/darknet/custom)에 마운트하여 각종 dataset, weights 및 cfg 파일들을 공유하자.
 #docker run --privileged -it --gpus all --env DISPLAY=$DISPLAY --env="QT_X11_NO_MITSHM=1" \
-# -v $(pwd):/darknet/host -v /dev/video0:/dev/video0 -v $XSOCK:$XSOCK -v $XAUTH:$XAUTH \
+# -v $HOME/yolo/custom:/darknet/custom -v /dev/video0:/dev/video0 -v $XSOCK:$XSOCK -v $XAUTH:$XAUTH \
 # -e XAUTHORITY=$XAUTH yolo_cuda10.1_cudnn7.6.5_opencv3.4.0_ubuntu18.04 /bin/bash
 
 # 실행
