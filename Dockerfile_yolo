@@ -2,15 +2,15 @@
 ## Author : Taha Emara, Email:taha@emaraic.com
 ## Modifier : Youngsoo Kim. '20. 8. 21
 
-# Make base image
+# Make base image from nvidia
 FROM nvidia/cuda:10.1-devel-ubuntu18.04
-LABEL maintainer "NVIDIA CORPORATION <cudatools@nvidia.com>"
+#LABEL maintainer "NVIDIA CORPORATION <cudatools@nvidia.com>"
 
 ARG CUDA_VERSION=10.1
 ARG CUDNN_VERSION=7.6.5.32
 ARG OPENCV_VERSION=3.4.0
 
-LABEL com.nvidia.cudnn.version="${CUDNN_VERSION}"
+#LABEL com.nvidia.cudnn.version="${CUDNN_VERSION}"
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libcudnn7=$CUDNN_VERSION-1+cuda10.1 \
