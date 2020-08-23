@@ -88,6 +88,13 @@ RUN cd /darknet && \
 
 ENV LD_LIBRARY_PATH $LD_LIBRARY_PATH:/usr/local/cuda-10.1/compat/
 
+RUN wget git https://github.com/AlexeyAB/darknet/releases/download/darknet_yolo_v3_optimal/yolov4.weights
+
 #RUN apt-get install -y x11-apps
 
 WORKDIR /darknet
+
+###  TEST  ###
+#xhost +local:docker
+#docker run -it --rm --gpus all --volume /tmp/.X11-unix:/tmp/.X11-unix:ro -e DISPLAY=unix:0 yolo_cuda10.1_cudnn7.6.5_opencv3.4.0_ubuntu18.04 /bin/bash
+#./darknet detector test ./cfg/coco.data ./cfg/yolov4.cfg ./yolov4.weights data/dog.jpg -i 0 -thresh 0.25
