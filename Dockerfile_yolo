@@ -1,0 +1,93 @@
+## Dockerfile to build a docker image contain Darknet, OPENCV, and CUDA.
+## Author : Taha Emara, Email:taha@emaraic.com
+## Modifier : Youngsoo Kim. '20. 8. 21
+
+# Make base image
+FROM nvidia/cuda:10.1-devel-ubuntu18.04
+LABEL maintainer "NVIDIA CORPORATION <cudatools@nvidia.com>"
+
+ARG CUDA_VERSION=10.1
+ARG CUDNN_VERSION=7.6.5.32
+ARG OPENCV_VERSION=3.4.0
+
+LABEL com.nvidia.cudnn.version="${CUDNN_VERSION}"
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libcudnn7=$CUDNN_VERSION-1+cuda10.1 \
+    libcudnn7-dev=$CUDNN_VERSION-1+cuda10.1 && \
+    apt-mark hold libcudnn7 && \
+    rm -rf /var/lib/apt/lists/*
+
+
+###  OPENCV INSTALL  ###
+
+RUN apt-get update && apt-get install -y cmake build-essential wget unzip apt-utils git vim
+
+# Install OpenCV libbraries
+RUN apt-get install -y libjpeg-dev libpng-dev libtiff-dev libavcodec-dev \
+    libavformat-dev libswscale-dev libv4l-dev v4l-utils libxvidcore-dev \
+    libx264-dev libxine2-dev \
+    libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libgtk-3-dev \
+    mesa-utils libgl1-mesa-dri libgtkgl2.0-dev libgtkglext1-dev \
+    libatlas-base-dev gfortran libeigen3-dev
+
+# Build OpenCV
+RUN cd / && mkdir opencv && cd opencv && \
+    wget -O opencv.zip https://github.com/opencv/opencv/archive/${OPENCV_VERSION}.zip && \
+    wget -O opencv_contrib.zip https://github.com/opencv/opencv_contrib/archive/${OPENCV_VERSION}.zip && \
+    unzip opencv.zip && \
+    unzip opencv_contrib.zip && \
+    rm opencv.zip && rm opencv_contrib.zip
+
+RUN apt-get install -y python-pip python3-pip python-numpy  python3-numpy
+
+RUN cd /opencv/opencv-${OPENCV_VERSION} && mkdir build && cd build && \
+    cmake -D CMAKE_BUILD_TYPE=RELEASE \
+    -D CMAKE_INSTALL_PREFIX=/usr/local \
+    -D WITH_TBB=OFF \
+    -D WITH_IPP=OFF \
+    -D WITH_1394=OFF \
+    -D BUILD_WITH_DEBUG_INFO=OFF \
+    -D BUILD_DOCS=OFF \
+    -D INSTALL_C_EXAMPLES=ON \
+    -D ENABLE_CXX11=ON \
+    -D INSTALL_PYTHON_EXAMPLES=ON \
+    -D BUILD_EXAMPLES=OFF \
+    -D BUILD_TESTS=OFF \
+    -D BUILD_PERF_TESTS=OFF \
+    -D WITH_QT=OFF \
+    -D WITH_GTK=ON \
+    -D WITH_OPENGL=ON \
+    -D OPENCV_EXTRA_MODULES_PATH=../../opencv_contrib-${OPENCV_VERSION}/modules \
+    -D WITH_V4L=ON  \
+    -D WITH_FFMPEG=ON \
+    -D WITH_XINE=ON \
+    -D BUILD_NEW_PYTHON_SUPPORT=ON \
+    -D PYTHON2_INCLUDE_DIR=/usr/include/python2.7 \
+    -D PYTHON2_NUMPY_INCLUDE_DIRS=/usr/lib/python2.7/dist-packages/numpy/core/include/ \
+    -D PYTHON2_PACKAGES_PATH=/usr/lib/python2.7/dist-packages \
+    -D PYTHON2_LIBRARY=/usr/lib/x86_64-linux-gnu/libpython2.7.so \
+    -D PYTHON3_INCLUDE_DIR=/usr/include/python3.6m \
+    -D PYTHON3_NUMPY_INCLUDE_DIRS=/usr/lib/python3/dist-packages/numpy/core/include/  \
+    -D PYTHON3_PACKAGES_PATH=/usr/lib/python3/dist-packages \
+    -D PYTHON3_LIBRARY=/usr/lib/x86_64-linux-gnu/libpython3.6m.so \
+    ../
+
+RUN cd /opencv/opencv-${OPENCV_VERSION}/build && make -j$(nproc) && make install && \
+    sh -c echo '/usr/local/lib/' > sudo /etc/ld.so.conf.d/opencv.conf && \
+    ldconfig
+
+###  DARKNET INSTALL  ###
+RUN cd / && git clone https://github.com/AlexeyAB/darknet
+
+RUN cd /darknet && \
+    sed -i 's/GPU=0/GPU=1/g' Makefile && \
+    sed -i 's/CUDNN=0/CUDNN=1/g' Makefile && \
+    sed -i 's/OPENCV=0/OPENCV=1/g' Makefile && \
+    make -j$(nproc)
+
+ENV LD_LIBRARY_PATH $LD_LIBRARY_PATH:/usr/local/cuda-10.1/compat/
+
+#RUN apt-get install -y x11-apps
+
+WORKDIR /darknet
